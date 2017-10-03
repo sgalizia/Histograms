@@ -17,13 +17,16 @@ class Dictogram(dict):
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
-            # TODO: increment item count
-            pass
+            if self.count(item) == 0:
+                self.types += 1
+                self[item] = 1
+            else:
+                self[item] += 1
+            self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
-        pass
+        return self.get(item, 0)
 
 
 class Listogram(list):
@@ -39,23 +42,31 @@ class Listogram(list):
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
-            # TODO: increment item count
-            pass
+            index = self._index(item)
+            if index:
+                self[index][1] += 1
+            else:
+                self.append([item, 1])
+                self.types += 1
+            self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
-        pass
+        if self._index(item) is not None:
+            return self[self._index(item)][1]
+        else:
+            return 0
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
-        # TODO: check if item is in histogram
-        pass
+        return True if self._index(item) is not None else False
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
-        # TODO: implement linear search to find an item's index
-        pass
+        for item in self:
+            if item[0] == target:
+                return self.index(item)
+        return None
 
 
 def test_histogram(text_list):
